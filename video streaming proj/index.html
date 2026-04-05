@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VStream - Premium Technical Video Platform</title>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --bg-gradient-start: #020617;
+      --bg-gradient-end: #0f172a;
+      --accent-color: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.5);
+      --glass-bg: rgba(30, 41, 59, 0.4);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: radial-gradient(circle at top right, var(--bg-gradient-end), var(--bg-gradient-start));
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Background Animation */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      overflow: hidden;
+    }
+    .bg-sphere {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      animation: float 20s infinite ease-in-out alternate;
+    }
+    .sphere-1 {
+      width: 400px;
+      height: 400px;
+      background: rgba(99, 102, 241, 0.3);
+      top: -100px;
+      left: 10%;
+    }
+    .sphere-2 {
+      width: 300px;
+      height: 300px;
+      background: rgba(168, 85, 247, 0.3);
+      bottom: -50px;
+      right: 15%;
+      animation-delay: -5s;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-50px) scale(1.1); }
+    }
+
+    /* Navbar Glassmorphism */
+    .navbar {
+      background: rgba(2, 6, 23, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(to right, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-container {
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 18px;
+      height: 18px;
+      pointer-events: none;
+    }
+
+    input[type="text"] {
+      padding: 12px 15px 12px 40px;
+      width: 300px;
+      border-radius: 30px;
+      border: 1px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      font-family: inherit;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      width: 350px;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--accent-color);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+    
+    input[type="text"]::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Header text */
+    .header-text {
+      text-align: center;
+      margin: 40px 20px 20px;
+    }
+    
+    .header-text h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    
+    .header-text p {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Categories / Tabs */
+    .categories {
+      text-align: center;
+      margin: 30px 20px 40px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .categories button {
+      padding: 10px 24px;
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .categories button:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .categories button.active {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-color: transparent;
+      box-shadow: 0 4px 15px var(--accent-glow);
+      color: white;
+    }
+
+    /* Video Grid Layout */
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 30px;
+      padding: 0 40px 60px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Video Card Glassmorphism */
+    .video-box {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 20px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .video-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #818cf8, #c084fc);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .video-box:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.5), 0 0 15px rgba(139, 92, 246, 0.2);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .video-box:hover::before {
+      opacity: 1;
+    }
+
+    .video-box h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+      color: #fff;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 10px;
+      background: #000;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      outline: none;
+    }
+    
+    /* Smooth fade in/out for filtering */
+    .video-box.fade-out {
+      opacity: 0;
+      transform: scale(0.9);
+      pointer-events: none;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .navbar { padding: 15px 20px; flex-direction: column; gap: 15px; }
+      input[type="text"], input[type="text"]:focus { width: 100%; }
+      .container { padding: 0 20px 40px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="bg-animation">
+  <div class="bg-sphere sphere-1"></div>
+  <div class="bg-sphere sphere-2"></div>
+</div>
+
+<div class="navbar">
+  <div class="logo">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #c084fc;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+    VStream
+  </div>
+  <div class="search-container">
+    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    <input type="text" id="search" placeholder="Search for courses..." onkeyup="searchVideos()">
+  </div>
+</div>
+
+<div class="header-text">
+  <h1>Explore Your Next Skill</h1>
+  <p>Cloud-Based Video Streaming Platform (AWS: S3 Storage)</p>
+</div>
+
+<div class="categories">
+  <button class="filter-btn active" onclick="filterVideos('all', this)">All Courses</button>
+  <button class="filter-btn" onclick="filterVideos('web', this)">Web Dev</button>
+  <button class="filter-btn" onclick="filterVideos('programming', this)">Programming</button>
+  <button class="filter-btn" onclick="filterVideos('core', this)">Core CS</button>
+  <button class="filter-btn" onclick="filterVideos('advanced', this)">Advanced</button>
+</div>
+
+<div class="container">
+
+  <div class="video-box web">
+    <h3>HTML Basics</h3>
+    <video controls>
+  <source src="html.mp4" type="video/mp4">
+</video>
+  </div>
+
+  <div class="video-box web">
+    <h3>CSS Basics</h3>
+    <video controls>
+  <source src="css.mp4" type="video/mp4">
+</video>
+  </div>
+
+  <div class="video-box web">
+    <h3>JavaScript</h3>
+    <video controls>
+  <source src="js.mp4" type="video/mp4">
+</video>
+  </div>
+
+  <div class="video-box advanced">
+    <h3>Cloud Computing</h3>
+    <video controls>
+  <source src="cloud.mp4" type="video/mp4">
+</video>
+  </div>
+
+  <div class="video-box programming">
+    <h3>Python Programming</h3>
+    <video controls>
+  <source src="python.mp4" type="video/mp4">
+</video>
+  </div>
+
+  <div class="video-box programming">
+    <h3>Java Programming</h3>
+    <video controls>
+  <source src="java.mp4" type="video/mp4">
+</video>
+  </div>
+
+  <div class="video-box core">
+    <h3>DBMS</h3>
+    <video controls>
+  <source src="dbms.mp4" type="video/mp4">
+</video>  </div>
+
+  <div class="video-box core">
+    <h3>Operating System</h3>
+    <video controls>
+  <source src="os.mp4" type="video/mp4">
+</video>
+  </div>
+
+  <div class="video-box core">
+    <h3>Computer Networks</h3>
+    <video controls>
+  <source src="network.mp4" type="video/mp4">
+</video>
+  </div>
+
+  <div class="video-box advanced">
+    <h3>Artificial Intelligence</h3>
+    <video controls>
+  <source src="ai.mp4" type="video/mp4">
+</video>
+  </div>
+
+</div>
+
+<script>
+function searchVideos() {
+  let input = document.getElementById("search").value.toLowerCase();
+  let videos = document.getElementsByClassName("video-box");
+
+  for (let i = 0; i < videos.length; i++) {
+    let title = videos[i].querySelector('h3').innerText.toLowerCase();
+    if (title.includes(input)) {
+      videos[i].style.display = "flex";
+      setTimeout(() => videos[i].classList.remove('fade-out'), 50);
+    } else {
+      videos[i].classList.add('fade-out');
+      setTimeout(() => videos[i].style.display = "none", 300);
+    }
+  }
+}
+
+function filterVideos(category, btnElement) {
+  // Update active button state
+  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+  if(btnElement) btnElement.classList.add('active');
+
+  let videos = document.getElementsByClassName("video-box");
+  let searchInput = document.getElementById("search").value.toLowerCase();
+
+  for (let i = 0; i < videos.length; i++) {
+    let matchesCategory = category === "all" || videos[i].classList.contains(category);
+    let title = videos[i].querySelector('h3').innerText.toLowerCase();
+    let matchesSearch = title.includes(searchInput);
+
+    if (matchesCategory && matchesSearch) {
+      videos[i].style.display = "flex";
+      setTimeout(() => videos[i].classList.remove('fade-out'), 50);
+    } else {
+      videos[i].classList.add('fade-out');
+      setTimeout(() => {
+        if (videos[i].classList.contains('fade-out')) {
+          videos[i].style.display = "none";
+        }
+      }, 300);
+    }
+  }
+}
+</script>
+
+</body>
+</html>

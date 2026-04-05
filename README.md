@@ -86,4 +86,5 @@ This project demonstrates how a static web application can be deployed on cloud 
 
 ## 👨‍💻 Author
 
-Your Name
+Dhani Sinha
+
